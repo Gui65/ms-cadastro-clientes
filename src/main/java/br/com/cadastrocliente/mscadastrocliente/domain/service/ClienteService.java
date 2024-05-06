@@ -1,11 +1,15 @@
 package br.com.cadastrocliente.mscadastrocliente.domain.service;
 
+import br.com.cadastrocliente.mscadastrocliente.application.controller.exception.CpfException;
+import br.com.cadastrocliente.mscadastrocliente.application.controller.exception.NaoEncontradoException;
 import br.com.cadastrocliente.mscadastrocliente.application.request.ClienteRequestDTO;
 import br.com.cadastrocliente.mscadastrocliente.application.response.ClienteResponseDTO;
 import br.com.cadastrocliente.mscadastrocliente.domain.entity.Cliente;
 import br.com.cadastrocliente.mscadastrocliente.infra.repository.ClienteRespository;
 import br.com.cadastrocliente.mscadastrocliente.utils.Utils;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ClienteService {
@@ -19,21 +23,37 @@ public class ClienteService {
         this.utils = utils;
     }
 
+    public List<ClienteResponseDTO> obterTodos() {
+        return clienteRespository
+                .findAll()
+                .stream()
+                .map(this::toResponseDTO)
+                .toList();
+    }
+
     public ClienteResponseDTO cadastrarCliente(ClienteRequestDTO clienteRequestDTO) {
         Cliente cliente = toEntity(clienteRequestDTO);
+
+        if (cpfExistente(clienteRequestDTO.cpf()))
+            throw new CpfException("Esse cpf já está sendo utilizado");
 
         return toResponseDTO(clienteRespository.save(cliente));
     }
 
     public Cliente obterClientePorId(Long id) {
-        //ALTERAR EXCEPTION
-        return clienteRespository.findById(id).orElse(null);
+        return clienteRespository.findById(id) .orElseThrow(() -> new NaoEncontradoException(
+                String.format("Cliente com o id '%d' não encontrado", id)
+        ));
     }
 
     public ClienteResponseDTO atualizarCliente(Long id, ClienteRequestDTO clienteRequestDTO) {
 
         Cliente cliente = obterClientePorId(id);
 
+        if (clienteRequestDTO.cpf() != null && !clienteRequestDTO.cpf().equals(cliente.getCpf())){
+            if (cpfExistente(clienteRequestDTO.cpf()))
+                throw new CpfException("Esse cpf já está sendo utilizado");
+        }
         utils.copyNonNullProperties(clienteRequestDTO, cliente);
 
         return toResponseDTO(clienteRespository.save(cliente));
@@ -41,6 +61,8 @@ public class ClienteService {
     }
 
     public void deletarCliente(Long id) {
+        existePorId(id);
+
         clienteRespository.deleteById(id);
     }
 
@@ -68,4 +90,14 @@ public class ClienteService {
                 .build();
     }
 
+    private boolean cpfExistente(String cpf) {
+        return clienteRespository.existsByCpf(cpf);
+    }
+
+    private void existePorId(Long idCliente) {
+        if (!clienteRespository.existsById(idCliente))
+            throw new NaoEncontradoException(
+                    String.format("Cliente com o id '%d' não encontrado", idCliente));
+
+    }
 }

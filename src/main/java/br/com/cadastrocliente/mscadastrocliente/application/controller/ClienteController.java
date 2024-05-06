@@ -6,6 +6,8 @@ import br.com.cadastrocliente.mscadastrocliente.domain.service.ClienteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/cliente")
 public class ClienteController {
@@ -14,6 +16,12 @@ public class ClienteController {
 
     public ClienteController(ClienteService clienteService) {
         this.clienteService = clienteService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ClienteResponseDTO>> obterTodos() {
+
+        return ResponseEntity.ok(clienteService.obterTodos());
     }
 
     @PostMapping("/cadastrar")
