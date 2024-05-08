@@ -13,7 +13,7 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(CpfException.class)
     public ResponseEntity<StandardError> cpfException(CpfException e, HttpServletRequest request) {
-        HttpStatus status = HttpStatus.BAD_REQUEST;
+        HttpStatus status = HttpStatus.CONFLICT;
 
         StandardError standardError = StandardError.builder()
                 .timestamp(Instant.now())

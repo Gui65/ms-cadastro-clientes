@@ -6,6 +6,7 @@ import br.com.cadastrocliente.mscadastrocliente.domain.service.ClienteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -27,13 +28,13 @@ public class ClienteController {
     @PostMapping("/cadastrar")
     public ResponseEntity<ClienteResponseDTO> cadastrarCliente(@RequestBody ClienteRequestDTO clienteRequestDTO) {
 
-        return ResponseEntity.ok(clienteService.cadastrarCliente(clienteRequestDTO));
+        return ResponseEntity.status(201).body(clienteService.cadastrarCliente(clienteRequestDTO));
     }
 
     @GetMapping("buscar/{id}")
     public ResponseEntity<ClienteResponseDTO> obterClientePorId(@PathVariable Long id) {
 
-        return ResponseEntity.ok(clienteService.toResponseDTO(clienteService.obterClientePorId(id)));
+        return ResponseEntity.ok(clienteService.obterClienteResponsePorId(id));
     }
 
     @DeleteMapping("deletar/{id}")

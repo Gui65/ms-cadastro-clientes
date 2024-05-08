@@ -40,6 +40,10 @@ public class ClienteService {
         return toResponseDTO(clienteRespository.save(cliente));
     }
 
+    public ClienteResponseDTO obterClienteResponsePorId(Long id) {
+        return toResponseDTO(obterClientePorId(id));
+    }
+
     public Cliente obterClientePorId(Long id) {
         return clienteRespository.findById(id) .orElseThrow(() -> new NaoEncontradoException(
                 String.format("Cliente com o id '%d' não encontrado", id)
