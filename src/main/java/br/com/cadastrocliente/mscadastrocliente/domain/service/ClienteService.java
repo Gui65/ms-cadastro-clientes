@@ -16,7 +16,7 @@ public class ClienteService {
 
     private final ClienteRespository clienteRespository;
 
-   private final Utils utils;
+    private final Utils utils;
 
     public ClienteService(ClienteRespository clienteRespository, Utils utils) {
         this.clienteRespository = clienteRespository;
@@ -34,10 +34,13 @@ public class ClienteService {
     public ClienteResponseDTO cadastrarCliente(ClienteRequestDTO clienteRequestDTO) {
         Cliente cliente = toEntity(clienteRequestDTO);
 
-        if (cpfExistente(clienteRequestDTO.cpf()))
+        if (cpfExistente(clienteRequestDTO.cpf())){
             throw new CpfException("Esse cpf já está sendo utilizado");
+        }
 
-        return toResponseDTO(clienteRespository.save(cliente));
+        clienteRespository.save(cliente);
+
+        return toResponseDTO(cliente);
     }
 
     public ClienteResponseDTO obterClienteResponsePorId(Long id) {
@@ -60,7 +63,9 @@ public class ClienteService {
         }
         utils.copyNonNullProperties(clienteRequestDTO, cliente);
 
-        return toResponseDTO(clienteRespository.save(cliente));
+        clienteRespository.save(cliente);
+
+        return toResponseDTO(cliente);
 
     }
 
@@ -92,6 +97,19 @@ public class ClienteService {
                 .telefone(clienteRequestDTO.telefone())
                 .endereco(clienteRequestDTO.endereco())
                 .build();
+    }
+
+    public ClienteRequestDTO toRequestDTO(Cliente cliente) {
+        return new ClienteRequestDTO(
+                cliente.getId(),
+                cliente.getNome(),
+                cliente.getEmail(),
+                cliente.getSenha(),
+                cliente.getTelefone(),
+                cliente.getCpf(),
+                cliente.getRg(),
+                cliente.getEndereco()
+                );
     }
 
     private boolean cpfExistente(String cpf) {

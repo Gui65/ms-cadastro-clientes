@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.Optional;
+
 @Getter
 @Setter
 @SuperBuilder
@@ -27,4 +29,6 @@ public class Cliente {
 
     @Embedded
     private Endereco endereco;
+
+
 }

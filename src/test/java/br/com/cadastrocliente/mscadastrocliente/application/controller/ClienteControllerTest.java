@@ -15,18 +15,18 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class ClienteControllerTest {
@@ -88,7 +88,8 @@ public class ClienteControllerTest {
 
             when(clienteService.obterClienteResponsePorId(3L)).thenReturn(clienteResponse);
 
-            mockMvc.perform(get("/cliente/buscar/{id}", 3L)).andExpect(status().isOk());
+            mockMvc.perform(get("/cliente/buscar/{id}", 3L))
+                    .andExpect(status().isOk());
 
             verify(clienteService, times(1)).obterClienteResponsePorId(3L);
         }
@@ -145,6 +146,84 @@ public class ClienteControllerTest {
                         String json = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
                         assertThat(json).contains("Cpf Exception");
                     });
+        }
+    }
+
+    @Nested
+    class AtualizarCliente {
+
+        @Test
+        void atualizarCliente() throws Exception {
+
+            var clienteRequestDTO = buildClienteRequestDTO();
+            ClienteResponseDTO clienteResponseDTO = clienteService
+                    .toResponseDTO(clienteService.toEntity(clienteRequestDTO));
+
+            when(clienteService.atualizarCliente(1L, clienteRequestDTO)).thenReturn(clienteResponseDTO);
+
+            mockMvc.perform(put("/cliente/atualizar/{id}", 1L)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(asJsonString(clienteRequestDTO)))
+                    .andExpect(status().isOk());
+
+            verify(clienteService, times(1)).atualizarCliente(1L, clienteRequestDTO);
+
+        }
+
+        @Test
+        void deveGerarExcessaoQuandoCpfJaCadastrado() throws Exception {
+
+            var clienteRequestDTO = buildClienteRequestDTO();
+
+            when(clienteService.atualizarCliente(1L ,clienteRequestDTO)).thenThrow(CpfException.class);
+
+            mockMvc.perform(put("/cliente/atualizar/{id}", 1L)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(asJsonString(clienteRequestDTO)))
+                    .andExpect(status().isConflict())
+                    .andExpect(result -> {
+                        String json = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
+                        assertThat(json).contains("Cpf Exception");
+                    });
+
+            verify(clienteService, times(1)).atualizarCliente(1L, clienteRequestDTO);
+        }
+
+        /*@Test
+        void deveGerarExcessaoQuandoIdNaoEncontrado() throws Exception {
+
+            var clienteRequestDTO = buildClienteRequestDTO();
+
+            when(clienteService.atualizarCliente(4L ,clienteRequestDTO))
+                    .thenThrow(NaoEncontradoException.class);
+
+            mockMvc.perform(put("/cliente/atualizar/{id}", 4L)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(asJsonString(4L)))
+                    .andExpect(status().isNotFound())
+                    .andExpect(result -> {
+                        String json = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
+                        assertThat(json).contains("Nao Encontrado Exception");
+                    });
+
+            verify(clienteService, times(1)).atualizarCliente(4L, clienteRequestDTO);
+
+        }*/
+    }
+
+    @Nested
+    class DeletarCliente {
+
+        @Test
+        void deletarCliente() throws Exception {
+
+            doNothing().when(clienteService).deletarCliente(1L);
+
+
+            mockMvc.perform(delete("/cliente/deletar/{id}", 1L))
+                    .andExpect(status().isNoContent());
+
+            verify(clienteService, times(1)).deletarCliente(1L);
         }
     }
 
