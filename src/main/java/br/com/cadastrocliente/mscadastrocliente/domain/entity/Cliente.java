@@ -11,6 +11,7 @@ import java.util.Optional;
 @Setter
 @SuperBuilder
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "TB_CLIENTE")
@@ -29,6 +30,5 @@ public class Cliente {
 
     @Embedded
     private Endereco endereco;
-
 
 }
