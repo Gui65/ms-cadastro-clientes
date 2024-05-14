@@ -1,6 +1,8 @@
 package br.com.cadastrocliente.mscadastrocliente.domain.service;
 
+import br.com.cadastrocliente.mscadastrocliente.application.controller.exception.CpfException;
 import br.com.cadastrocliente.mscadastrocliente.application.controller.exception.NaoEncontradoException;
+import br.com.cadastrocliente.mscadastrocliente.application.request.ClienteRequestDTO;
 import br.com.cadastrocliente.mscadastrocliente.application.response.ClienteResponseDTO;
 import br.com.cadastrocliente.mscadastrocliente.domain.entity.Cliente;
 import br.com.cadastrocliente.mscadastrocliente.domain.valueObject.Endereco;
@@ -18,6 +20,7 @@ import org.w3c.dom.stylesheets.LinkStyle;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 @SpringBootTest
@@ -158,7 +161,7 @@ public class ClienteServiceIT {
         @Test
         void deveRetornarTodosOsClientes() {
             List<ClienteResponseDTO> clientes = clienteService.obterTodos();
-            
+
             assertThat(clientes).hasSize(5);
 
             // Cliente 1
@@ -489,5 +492,282 @@ public class ClienteServiceIT {
     }
 
 
+    @Nested
+    class CadastrarCliente {
 
+        @Test
+        void deveCadastrarCliente() {
+
+            // Arrange
+            var clienteRequestDTO = new ClienteRequestDTO(
+                    6L,
+                    "Fulano de Tal",
+                    "fulano@example.com",
+                    "senha123",
+                    "987654321",
+                    "84562414541",
+                    "369258147",
+                    new Endereco(
+                            "369258147",
+                            "Rua dos indios",
+                            "Apartamento",
+                            "Nova Conquista",
+                            "Rio de Janeiro",
+                            "RJ",
+                            "876",
+                            2222.98765,
+                            333333.333
+                    )
+            );
+
+            // Act
+            var cliente = clienteService.cadastrarCliente(clienteRequestDTO);
+
+            // Assert
+            assertThat(cliente)
+                    .isNotNull()
+                    .isInstanceOf(ClienteResponseDTO.class);
+            assertThat(cliente.id())
+                    .isNotNull()
+                    .isEqualTo(6L);
+            assertThat(cliente.nome())
+                    .isNotNull()
+                    .isEqualTo("Fulano de Tal");
+            assertThat(cliente.email())
+                    .isNotNull()
+                    .isEqualTo("fulano@example.com");
+            assertThat(cliente.cpf())
+                    .isNotNull()
+                    .isEqualTo("84562414541");
+            assertThat(cliente.telefone())
+                    .isEqualTo("987654321");
+            assertThat(cliente.endereco().getCep())
+                    .isNotNull()
+                    .isEqualTo("369258147");
+            assertThat(cliente.endereco().getLogradouro())
+                    .isNotNull()
+                    .isEqualTo("Rua dos indios");
+            assertThat(cliente.endereco().getNumero())
+                    .isNotNull()
+                    .isEqualTo("876");
+            assertThat(cliente.endereco().getComplemento())
+                    .isNotNull()
+                    .isEqualTo("Apartamento");
+            assertThat(cliente.endereco().getBairro())
+                    .isNotNull()
+                    .isEqualTo("Nova Conquista");
+            assertThat(cliente.endereco().getCidade())
+                    .isNotNull()
+                    .isEqualTo("Rio de Janeiro");
+            assertThat(cliente.endereco().getUf())
+                    .isNotNull()
+                    .isEqualTo("RJ");
+            assertThat(cliente.endereco().getLatitude())
+                    .isNotNull()
+                    .isEqualTo(2222.98765);
+            assertThat(cliente.endereco().getLongitude())
+                    .isNotNull()
+                    .isEqualTo(333333.333);
+
+        }
+
+        @Test
+        void deveGerarExcessaoQuandoCpfJaCadastrado() {
+
+            // Arrange
+            var clienteRequestDTO = new ClienteRequestDTO(
+                    6L,
+                    "Fulano de Tal",
+                    "fulano@example.com",
+                    "Sdsadwd21321@#$",
+                    "987654321",
+                    "12345678910",
+                    "369258147",
+                    new Endereco(
+                            "369258147",
+                            "Rua dos indios",
+                            "Apartamento",
+                            "Nova Conquista",
+                            "Rio de Janeiro",
+                            "RJ",
+                            "876",
+                            2222.98765,
+                            333333.333
+                    )
+            );
+
+            // Act
+            Assertions.assertThatThrownBy(() -> clienteService.cadastrarCliente(clienteRequestDTO))
+                    .isInstanceOf(CpfException.class)
+                    .hasMessage("Esse cpf já está sendo utilizado");
+
+        }
+    }
+
+    @Nested
+    class AtualizarCliente {
+
+        @Test
+        void deveAtualizarCliente() {
+            Long id = 3L;
+            // Arrange
+            var clienteRequestDTO = new ClienteRequestDTO(
+                    id,
+                    "Fulano de Tal",
+                    "fulano@example.com",
+                    "Sdsadwd21321@#$",
+                    "987654321",
+                    "11987654321",
+                    "369258147",
+                    new Endereco(
+                            "369258147",
+                            "Rua dos indios",
+                            "Apartamento",
+                            "Nova Conquista",
+                            "Rio de Janeiro",
+                            "RJ",
+                            "876",
+                            2222.98765,
+                            333333.333
+                    )
+            );
+
+            // Act
+            var cliente = clienteService.atualizarCliente(id, clienteRequestDTO);
+
+            // Assert
+            assertThat(cliente)
+                    .isNotNull()
+                    .isInstanceOf(ClienteResponseDTO.class);
+            assertThat(cliente.id())
+                    .isNotNull()
+                    .isEqualTo(id);
+            assertThat(cliente.nome())
+                    .isNotNull()
+                    .isEqualTo("Fulano de Tal");
+            assertThat(cliente.email())
+                    .isNotNull()
+                    .isEqualTo("fulano@example.com");
+            assertThat(cliente.cpf())
+                    .isNotNull()
+                    .isEqualTo("11987654321");
+            assertThat(cliente.telefone())
+                    .isEqualTo("987654321");
+            assertThat(cliente.endereco().getCep())
+                    .isNotNull()
+                    .isEqualTo("369258147");
+            assertThat(cliente.endereco().getLogradouro())
+                    .isNotNull()
+                    .isEqualTo("Rua dos indios");
+            assertThat(cliente.endereco().getNumero())
+                    .isNotNull()
+                    .isEqualTo("876");
+            assertThat(cliente.endereco().getComplemento())
+                    .isNotNull()
+                    .isEqualTo("Apartamento");
+            assertThat(cliente.endereco().getBairro())
+                    .isNotNull()
+                    .isEqualTo("Nova Conquista");
+            assertThat(cliente.endereco().getCidade())
+                    .isNotNull()
+                    .isEqualTo("Rio de Janeiro");
+            assertThat(cliente.endereco().getUf())
+                    .isNotNull()
+                    .isEqualTo("RJ");
+            assertThat(cliente.endereco().getLatitude())
+                    .isNotNull()
+                    .isEqualTo(2222.98765);
+            assertThat(cliente.endereco().getLongitude())
+                    .isNotNull()
+                    .isEqualTo(333333.333);
+        }
+
+        @Test
+        void deveGerarExcessaoQuandoCpfJaCadastrado() {
+            Long id = 3L;
+            // Arrange
+            var clienteRequestDTO = new ClienteRequestDTO(
+                    id,
+                    "Fulano de Tal",
+                    "fulano@example.com",
+                    "Sdsadwd21321@#$",
+                    "987654321",
+                    "12345678910",
+                    "369258147",
+                    new Endereco(
+                            "369258147",
+                            "Rua dos indios",
+                            "Apartamento",
+                            "Nova Conquista",
+                            "Rio de Janeiro",
+                            "RJ",
+                            "876",
+                            2222.98765,
+                            333333.333
+                    )
+            );
+
+            // Act
+            Assertions.assertThatThrownBy(() -> clienteService.atualizarCliente(id, clienteRequestDTO))
+                    .isInstanceOf(CpfException.class)
+                    .hasMessage("Esse cpf já está sendo utilizado");
+
+        }
+
+        @Test
+        void deveGerarExcessaoQuandoNaoEncontrado() {
+            Long id = 10L;
+            // Arrange
+            var clienteRequestDTO = new ClienteRequestDTO(
+                    id,
+                    "Fulano de Tal",
+                    "fulano@example.com",
+                    "Sdsadwd21321@#$",
+                    "987654321",
+                    "12345678910",
+                    "369258147",
+                    new Endereco(
+                            "369258147",
+                            "Rua dos indios",
+                            "Apartamento",
+                            "Nova Conquista",
+                            "Rio de Janeiro",
+                            "RJ",
+                            "876",
+                            2222.98765,
+                            333333.333
+                    )
+            );
+
+            // Act
+            Assertions.assertThatThrownBy(() -> clienteService.atualizarCliente(10L, clienteRequestDTO))
+                    .isInstanceOf(NaoEncontradoException.class)
+                    .hasMessage("Cliente com o id '%d' não encontrado", id);
+        }
+    }
+
+    @Nested
+    class DeletarCliente {
+
+        @Test
+        void deveDeletarCliente() {
+            Long id = 5L;
+            // Act
+            clienteService.deletarCliente(id);
+
+            // Assert
+            assertThat(clienteRespository.existsById(id))
+                    .isFalse();
+        }
+
+        @Test
+        void deveGerarExcessaoQuandoNaoEncontrado() {
+            Long idNaoExiste = 7L;
+
+            // Act
+            assertThatThrownBy(() -> clienteService.deletarCliente(idNaoExiste))
+                    .isInstanceOf(NaoEncontradoException.class)
+                    .hasMessage(String.format("Cliente com o id '%d' não encontrado", idNaoExiste));
+        }
+    }
 }

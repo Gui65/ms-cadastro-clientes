@@ -34,7 +34,7 @@ public class ClienteService {
     public ClienteResponseDTO cadastrarCliente(ClienteRequestDTO clienteRequestDTO) {
         Cliente cliente = toEntity(clienteRequestDTO);
 
-        if (cpfExistente(clienteRequestDTO.cpf())){
+        if (cpfExistente(clienteRequestDTO.cpf())) {
             throw new CpfException("Esse cpf já está sendo utilizado");
         }
 
@@ -48,7 +48,7 @@ public class ClienteService {
     }
 
     public Cliente obterClientePorId(Long id) {
-        return clienteRespository.findById(id) .orElseThrow(() -> new NaoEncontradoException(
+        return clienteRespository.findById(id).orElseThrow(() -> new NaoEncontradoException(
                 String.format("Cliente com o id '%d' não encontrado", id)
         ));
     }
@@ -57,7 +57,7 @@ public class ClienteService {
 
         Cliente cliente = obterClientePorId(id);
 
-        if (clienteRequestDTO.cpf() != null && !clienteRequestDTO.cpf().equals(cliente.getCpf())){
+        if (clienteRequestDTO.cpf() != null && !clienteRequestDTO.cpf().equals(cliente.getCpf())) {
             if (cpfExistente(clienteRequestDTO.cpf()))
                 throw new CpfException("Esse cpf já está sendo utilizado");
         }
@@ -109,7 +109,7 @@ public class ClienteService {
                 cliente.getCpf(),
                 cliente.getRg(),
                 cliente.getEndereco()
-                );
+        );
     }
 
     private boolean cpfExistente(String cpf) {
@@ -117,9 +117,9 @@ public class ClienteService {
     }
 
     private void existePorId(Long idCliente) {
-        if (!clienteRespository.existsById(idCliente))
+        if (!clienteRespository.existsById(idCliente)) {
             throw new NaoEncontradoException(
                     String.format("Cliente com o id '%d' não encontrado", idCliente));
-
+        }
     }
 }
