@@ -32,7 +32,6 @@ public class ClienteServiceIT {
 
     @BeforeEach
     void populateDatabase() {
-        System.out.println("Populating database");
         List<Cliente> clientes = getClientes();
 
         clienteRespository.saveAll(clientes);

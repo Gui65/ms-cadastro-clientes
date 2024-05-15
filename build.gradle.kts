@@ -31,6 +31,16 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("com.h2database:h2")
     annotationProcessor("org.projectlombok:lombok")
+
+    testImplementation("io.qameta.allure:allure-junit5:2.23.0")
+    implementation("io.qameta.allure:allure-rest-assured:2.23.0")
+
+    testImplementation("io.rest-assured:json-schema-validator:5.3.1")
+    testImplementation("io.rest-assured:rest-assured:5.3.0") {
+        exclude(group = "org.codehaus.groovy", module = "groovy")
+        exclude(group = "org.codehaus.groovy", module = "groovy-xml")
+    }
+
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(module = "junit-vintage-engine") // Exclui o JUnit 4, se necessário
     }
