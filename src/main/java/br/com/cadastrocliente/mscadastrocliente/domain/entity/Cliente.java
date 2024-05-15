@@ -18,7 +18,8 @@ import java.util.Optional;
 public class Cliente {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // TENTAR ENTENDER COMO UTILIZAR ISSO SEM IMPACTAR MEUS TESTES
+    // @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String nome;
@@ -31,4 +32,14 @@ public class Cliente {
     @Embedded
     private Endereco endereco;
 
+
+    public Cliente(String nome, String email, String senha, String telefone, String cpf, String rg, Endereco endereco) {
+        this.nome = nome;
+        this.email = email;
+        this.senha = senha;
+        this.telefone = telefone;
+        this.cpf = cpf;
+        this.rg = rg;
+        this.endereco = endereco;
+    }
 }

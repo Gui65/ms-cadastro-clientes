@@ -1,5 +1,8 @@
 package br.com.cadastrocliente.mscadastrocliente.domain.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import br.com.cadastrocliente.mscadastrocliente.application.controller.exception.CpfException;
 import br.com.cadastrocliente.mscadastrocliente.application.controller.exception.NaoEncontradoException;
 import br.com.cadastrocliente.mscadastrocliente.application.request.ClienteRequestDTO;
@@ -9,19 +12,14 @@ import br.com.cadastrocliente.mscadastrocliente.domain.valueObject.Endereco;
 import br.com.cadastrocliente.mscadastrocliente.infra.repository.ClienteRespository;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.AssertionsForClassTypes;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.w3c.dom.stylesheets.LinkStyle;
 
 import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 @SpringBootTest
 public class ClienteServiceIT {
@@ -34,7 +32,13 @@ public class ClienteServiceIT {
 
     @BeforeEach
     void populateDatabase() {
+        System.out.println("Populating database");
+        List<Cliente> clientes = getClientes();
 
+        clienteRespository.saveAll(clientes);
+    }
+
+    private List<Cliente> getClientes() {
         // Cliente 1
         Cliente cliente1 = new Cliente(
                 1L,
@@ -57,7 +61,7 @@ public class ClienteServiceIT {
                 )
         );
 
-// Cliente 2
+        // Cliente 2
         Cliente cliente2 = new Cliente(
                 2L,
                 "Fulano de Tal",
@@ -79,7 +83,7 @@ public class ClienteServiceIT {
                 )
         );
 
-// Cliente 3
+        // Cliente 3
         Cliente cliente3 = new Cliente(
                 3L,
                 "Ciclano da Silva",
@@ -101,7 +105,7 @@ public class ClienteServiceIT {
                 )
         );
 
-// Cliente 4
+        // Cliente 4
         Cliente cliente4 = new Cliente(
                 4L,
                 "Beltrano Oliveira",
@@ -123,7 +127,7 @@ public class ClienteServiceIT {
                 )
         );
 
-// Cliente 5
+        // Cliente 5
         Cliente cliente5 = new Cliente(
                 5L,
                 "Maria Souza",
@@ -145,14 +149,13 @@ public class ClienteServiceIT {
                 )
         );
 
-        List<Cliente> clientes = List.of(cliente1, cliente2, cliente3, cliente4, cliente5);
-
-        this.clienteRespository.saveAll(clientes);
+        return List.of(cliente1, cliente2, cliente3, cliente4, cliente5);
     }
 
     @AfterEach
     void dropDatabase() {
-        this.clienteRespository.deleteAll();
+        System.out.println("Dropping database");
+        clienteRespository.deleteAll();
     }
 
     @Nested
@@ -751,18 +754,20 @@ public class ClienteServiceIT {
 
         @Test
         void deveDeletarCliente() {
-            Long id = 5L;
+            var id = 5L;
             // Act
             clienteService.deletarCliente(id);
 
             // Assert
-            assertThat(clienteRespository.existsById(id))
-                    .isFalse();
+            assertThat(clienteRespository.findById(id))
+                    .isEmpty();
+
+
         }
 
         @Test
         void deveGerarExcessaoQuandoNaoEncontrado() {
-            Long idNaoExiste = 7L;
+            var idNaoExiste = 10L;
 
             // Act
             assertThatThrownBy(() -> clienteService.deletarCliente(idNaoExiste))
@@ -770,4 +775,5 @@ public class ClienteServiceIT {
                     .hasMessage(String.format("Cliente com o id '%d' não encontrado", idNaoExiste));
         }
     }
+
 }
