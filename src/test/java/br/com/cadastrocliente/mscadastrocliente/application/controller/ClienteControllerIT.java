@@ -1,9 +1,11 @@
 package br.com.cadastrocliente.mscadastrocliente.application.controller;
 
+import br.com.cadastrocliente.mscadastrocliente.application.request.ClienteRequestDTO;
 import br.com.cadastrocliente.mscadastrocliente.domain.entity.Cliente;
 import br.com.cadastrocliente.mscadastrocliente.domain.service.ClienteService;
 import br.com.cadastrocliente.mscadastrocliente.domain.valueObject.Endereco;
 import br.com.cadastrocliente.mscadastrocliente.infra.repository.ClienteRespository;
+import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,10 +19,9 @@ import org.springframework.http.MediaType;
 
 import java.util.List;
 
-import io.qameta.allure.restassured.AllureRestAssured;
-import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -166,7 +167,7 @@ public class ClienteControllerIT {
     }
 
     @Nested
-    class ObterClientes{
+    class ObterClientes {
 
         @Test
         void obterTodos() {
@@ -224,6 +225,234 @@ public class ClienteControllerIT {
                     .body("status", equalTo(404))
                     .body("message", equalTo(
                             String.format("Cliente com o id '%d' não encontrado", id)));
+        }
+    }
+
+    @Nested
+    class CadastrarCliente {
+
+        @Test
+        void deveCadastrar() {
+            var request = new ClienteRequestDTO(
+                    1L,
+                    "Fulano de tal",
+                    "fulano@example.com",
+                    "Sdsadwd21321@#$",
+                    "11987654321",
+                    "666555481217",
+                    "369258147",
+                    new Endereco(
+                            "147852369",
+                            "Rua A",
+                            "Casa",
+                            "Centro",
+                            "São Paulo",
+                            "SP",
+                            "189",
+                            1111.54551,
+                            111122.226
+                    )
+
+            );
+
+            given()
+                    .filter(new AllureRestAssured())
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(request)
+                    .when()
+                    .post("/cliente/cadastrar")
+                    .then()
+                    .statusCode(HttpStatus.CREATED.value())
+                    .body(matchesJsonSchemaInClasspath("schemas/cliente.schema.json"));
+        }
+
+        @Test
+        void deveGerarExcessaoQuandoCpfJaCadastrado() throws Exception {
+
+            var request = new ClienteRequestDTO(
+                    1L,
+                    "Fulano de tal",
+                    "fulano@example.com",
+                    "Sdsadwd21321@#$",
+                    "11987654321",
+                    "12345678910",
+                    "369258147",
+                    new Endereco(
+                            "147852369",
+                            "Rua A",
+                            "Casa",
+                            "Centro",
+                            "São Paulo",
+                            "SP",
+                            "189",
+                            1111.54551,
+                            111122.226
+                    )
+            );
+
+            given()
+                    .filter(new AllureRestAssured())
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(request)
+                    .when()
+                    .post("/cliente/cadastrar")
+                    .then()
+                    .statusCode(HttpStatus.CONFLICT.value())
+                    .body(matchesJsonSchemaInClasspath("schemas/error.schema.json"))
+                    .body("error", equalTo("Cpf Exception"))
+                    .body("status", equalTo(409))
+                    .body("message", equalTo("Esse cpf já está sendo utilizado"));
+        }
+    }
+
+    @Nested
+    class AtualizarCliente {
+
+        @Test
+        void deveAtualizar() throws Exception {
+            var id = 1L;
+            var request = new ClienteRequestDTO(
+                    1L,
+                    "Fulano de tal",
+                    "fulano@example.com",
+                    "Sdsadwd21321@#$",
+                    "11987654321",
+                    "666555481217",
+                    "369258147",
+                    new Endereco(
+                            "147852369",
+                            "Rua A",
+                            "Casa",
+                            "Centro",
+                            "São Paulo",
+                            "SP",
+                            "189",
+                            1111.54551,
+                            111122.226
+                    )
+            );
+
+            given()
+                    .filter(new AllureRestAssured())
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(request)
+                    .when()
+                    .put("/cliente/atualizar/{id}", id)
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .body(matchesJsonSchemaInClasspath("schemas/cliente.schema.json"));
+        }
+
+        @Test
+        void deveGerarExcessaoQuandoIdNaoEncontrado() throws Exception {
+            var id = 6L;
+            var request = new ClienteRequestDTO(
+                    id,
+                    "Fulano de tal",
+                    "fulano@example.com",
+                    "Sdsadwd21321@#$",
+                    "11987654321",
+                    "666555481217",
+                    "369258147",
+                    new Endereco(
+                            "147852369",
+                            "Rua A",
+                            "Casa",
+                            "Centro",
+                            "São Paulo",
+                            "SP",
+                            "189",
+                            1111.54551,
+                            111122.226
+                    )
+            );
+
+            given()
+                    .filter(new AllureRestAssured())
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(request)
+                    .when()
+                    .put("/cliente/atualizar/{id}", id)
+                    .then()
+                    .statusCode(HttpStatus.NOT_FOUND.value())
+                    .body(matchesJsonSchemaInClasspath("schemas/error.schema.json"))
+                    .body("error", equalTo("Nao Encontrado Exception"))
+                    .body("status", equalTo(404))
+                    .body("message", equalTo(String
+                            .format("Cliente com o id '%d' não encontrado", id)));
+        }
+
+        @Test
+        void deveGerarExcessaoQuandoCpfJaCadastrado() throws Exception {
+            var id = 3L;
+            var request = new ClienteRequestDTO(
+                    id,
+                    "Fulano de tal",
+                    "fulano@example.com",
+                    "Sdsadwd21321@#$",
+                    "11987654321",
+                    "12345678910",
+                    "369258147",
+                    new Endereco(
+                            "147852369",
+                            "Rua A",
+                            "Casa",
+                            "Centro",
+                            "São Paulo",
+                            "SP",
+                            "189",
+                            1111.54551,
+                            111122.226
+                    )
+            );
+
+            given()
+                    .filter(new AllureRestAssured())
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(request)
+                    .when()
+                    .put("/cliente/atualizar/{id}", id)
+                    .then()
+                    .statusCode(HttpStatus.CONFLICT.value())
+                    .body(matchesJsonSchemaInClasspath("schemas/error.schema.json"))
+                    .body("error", equalTo("Cpf Exception"))
+                    .body("status", equalTo(409))
+                    .body("message", equalTo("Esse cpf já está sendo utilizado"));
+        }
+    }
+
+    @Nested
+    class DeletarCliente {
+
+        @Test
+        void deveDeletarCliente() throws Exception {
+            var id = 1L;
+
+            given()
+                    .filter(new AllureRestAssured())
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .when()
+                    .delete("/cliente/deletar/{id}", id)
+                    .then()
+                    .statusCode(HttpStatus.NO_CONTENT.value());
+        }
+
+        @Test
+        void deveGerarExcessaoQuandoIdNaoEncontrado() throws Exception {
+            var id = 6L;
+
+            given()
+                    .filter(new AllureRestAssured())
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .when()
+                    .delete("/cliente/deletar/{id}", id)
+                    .then()
+                    .statusCode(HttpStatus.NOT_FOUND.value())
+                    .body(matchesJsonSchemaInClasspath("schemas/error.schema.json"))
+                    .body("error", equalTo("Nao Encontrado Exception"))
+                    .body("status", equalTo(404))
+                    .body("message", equalTo(String
+                            .format("Cliente com o id '%d' não encontrado", id)));
         }
     }
 }
