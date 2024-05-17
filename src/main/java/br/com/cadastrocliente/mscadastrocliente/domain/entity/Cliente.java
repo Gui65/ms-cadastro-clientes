@@ -19,7 +19,7 @@ public class Cliente {
 
     @Id
     // TENTAR ENTENDER COMO UTILIZAR ISSO SEM IMPACTAR MEUS TESTES
-    // @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String nome;

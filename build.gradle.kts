@@ -44,6 +44,10 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(module = "junit-vintage-engine") // Exclui o JUnit 4, se necessário
     }
+
+    testImplementation("io.cucumber:cucumber-java:7.13.0")
+    testImplementation("io.cucumber:cucumber-junit-platform-engine:7.13.0")
+    testImplementation("org.junit.platform:junit-platform-suite-api:1.9.3")
 }
 
 tasks.withType<Test> {
