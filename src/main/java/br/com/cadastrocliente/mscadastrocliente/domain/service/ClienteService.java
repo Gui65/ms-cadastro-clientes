@@ -88,7 +88,6 @@ public class ClienteService {
 
     public Cliente toEntity(ClienteRequestDTO clienteRequestDTO) {
         return Cliente.builder()
-                .id(clienteRequestDTO.id())
                 .nome(clienteRequestDTO.nome())
                 .cpf(clienteRequestDTO.cpf())
                 .rg(clienteRequestDTO.rg())
@@ -101,7 +100,6 @@ public class ClienteService {
 
     public ClienteRequestDTO toRequestDTO(Cliente cliente) {
         return new ClienteRequestDTO(
-                cliente.getId(),
                 cliente.getNome(),
                 cliente.getEmail(),
                 cliente.getSenha(),

@@ -30,17 +30,16 @@ public class ClienteServiceIT {
     @Autowired
     private ClienteRespository clienteRespository;
 
+    private List<Cliente> clienteList;
     @BeforeEach
     void populateDatabase() {
         List<Cliente> clientes = getClientes();
 
-        clienteRespository.saveAll(clientes);
+        clienteList = clienteRespository.saveAll(clientes);
     }
-
     private List<Cliente> getClientes() {
         // Cliente 1
         Cliente cliente1 = new Cliente(
-                1L,
                 "Guilherme Matos de Carvalho",
                 "8Xa5I@example.com",
                 "Sdsadwd21321@#$",
@@ -48,7 +47,7 @@ public class ClienteServiceIT {
                 "12345678910",
                 "147852369",
                 new Endereco(
-                        "147852369",
+                        "14752369",
                         "Rua A",
                         "Casa",
                         "Centro",
@@ -62,7 +61,6 @@ public class ClienteServiceIT {
 
         // Cliente 2
         Cliente cliente2 = new Cliente(
-                2L,
                 "Fulano de Tal",
                 "fulano@example.com",
                 "senha123",
@@ -70,7 +68,7 @@ public class ClienteServiceIT {
                 "11987654321",
                 "987654321",
                 new Endereco(
-                        "987654321",
+                        "98764321",
                         "Rua B",
                         "Apartamento",
                         "Bairro Novo",
@@ -84,7 +82,6 @@ public class ClienteServiceIT {
 
         // Cliente 3
         Cliente cliente3 = new Cliente(
-                3L,
                 "Ciclano da Silva",
                 "ciclano@example.com",
                 "senha456",
@@ -92,7 +89,7 @@ public class ClienteServiceIT {
                 "11987654321",
                 "369258147",
                 new Endereco(
-                        "369258147",
+                        "36925847",
                         "Rua C",
                         "Sobrado",
                         "Centro",
@@ -106,7 +103,6 @@ public class ClienteServiceIT {
 
         // Cliente 4
         Cliente cliente4 = new Cliente(
-                4L,
                 "Beltrano Oliveira",
                 "beltrano@example.com",
                 "senha789",
@@ -114,7 +110,7 @@ public class ClienteServiceIT {
                 "11987654321",
                 "654123987",
                 new Endereco(
-                        "654123987",
+                        "65412397",
                         "Rua D",
                         "Casa",
                         "Periferia",
@@ -128,7 +124,6 @@ public class ClienteServiceIT {
 
         // Cliente 5
         Cliente cliente5 = new Cliente(
-                5L,
                 "Maria Souza",
                 "maria@example.com",
                 "senhaabc",
@@ -136,7 +131,7 @@ public class ClienteServiceIT {
                 "11987654321",
                 "852147369",
                 new Endereco(
-                        "852147369",
+                        "85214736",
                         "Rua E",
                         "Apartamento",
                         "Praia",
@@ -153,7 +148,7 @@ public class ClienteServiceIT {
 
     @AfterEach
     void dropDatabase() {
-        System.out.println("Dropping database");
+        clienteList = null;
         clienteRespository.deleteAll();
     }
 
@@ -168,8 +163,7 @@ public class ClienteServiceIT {
 
             // Cliente 1
             assertThat(clientes.get(0).id())
-                    .isNotNull()
-                    .isEqualTo(1L);
+                    .isNotNull();
             assertThat(clientes.get(0).nome())
                     .isNotNull()
                     .isEqualTo("Guilherme Matos de Carvalho");
@@ -183,7 +177,7 @@ public class ClienteServiceIT {
                     .isEqualTo("12345678910");
             assertThat(clientes.get(0).endereco().getCep())
                     .isNotNull()
-                    .isEqualTo("147852369");
+                    .isEqualTo("14752369");
             assertThat(clientes.get(0).endereco().getLogradouro())
                     .isNotNull()
                     .isEqualTo("Rua A");
@@ -205,8 +199,7 @@ public class ClienteServiceIT {
 
 // Cliente 2
             assertThat(clientes.get(1).id())
-                    .isNotNull()
-                    .isEqualTo(2L);
+                    .isNotNull();
             assertThat(clientes.get(1).nome())
                     .isNotNull()
                     .isEqualTo("Fulano de Tal");
@@ -220,7 +213,7 @@ public class ClienteServiceIT {
                     .isEqualTo("11987654321");
             assertThat(clientes.get(1).endereco().getCep())
                     .isNotNull()
-                    .isEqualTo("987654321");
+                    .isEqualTo("98764321");
             assertThat(clientes.get(1).endereco().getLogradouro())
                     .isNotNull()
                     .isEqualTo("Rua B");
@@ -243,8 +236,7 @@ public class ClienteServiceIT {
 
             // Cliente 3
             assertThat(clientes.get(2).id())
-                    .isNotNull()
-                    .isEqualTo(3L);
+                    .isNotNull();
             assertThat(clientes.get(2).nome())
                     .isNotNull()
                     .isEqualTo("Ciclano da Silva");
@@ -258,7 +250,7 @@ public class ClienteServiceIT {
                     .isEqualTo("11987654321");
             assertThat(clientes.get(2).endereco().getCep())
                     .isNotNull()
-                    .isEqualTo("369258147");
+                    .isEqualTo("36925847");
             assertThat(clientes.get(2).endereco().getLogradouro())
                     .isNotNull()
                     .isEqualTo("Rua C");
@@ -280,8 +272,7 @@ public class ClienteServiceIT {
 
 // Cliente 4
             assertThat(clientes.get(3).id())
-                    .isNotNull()
-                    .isEqualTo(4L);
+                    .isNotNull();
             assertThat(clientes.get(3).nome())
                     .isNotNull()
                     .isEqualTo("Beltrano Oliveira");
@@ -295,7 +286,7 @@ public class ClienteServiceIT {
                     .isEqualTo("11987654321");
             assertThat(clientes.get(3).endereco().getCep())
                     .isNotNull()
-                    .isEqualTo("654123987");
+                    .isEqualTo("65412397");
             assertThat(clientes.get(3).endereco().getLogradouro())
                     .isNotNull()
                     .isEqualTo("Rua D");
@@ -317,8 +308,7 @@ public class ClienteServiceIT {
 
 // Cliente 5
             assertThat(clientes.get(4).id())
-                    .isNotNull()
-                    .isEqualTo(5L);
+                    .isNotNull();
             assertThat(clientes.get(4).nome())
                     .isNotNull()
                     .isEqualTo("Maria Souza");
@@ -332,7 +322,7 @@ public class ClienteServiceIT {
                     .isEqualTo("11987654321");
             assertThat(clientes.get(4).endereco().getCep())
                     .isNotNull()
-                    .isEqualTo("852147369");
+                    .isEqualTo("85214736");
             assertThat(clientes.get(4).endereco().getLogradouro())
                     .isNotNull()
                     .isEqualTo("Rua E");
@@ -360,7 +350,7 @@ public class ClienteServiceIT {
         @Test
         void deveRetornarClienteResponsePorId() {
             // Arrange
-            Long id = 1L;
+            Long id = clienteList.get(0).getId();
 
             // Act
             var clienteResponse = clienteService.obterClienteResponsePorId(id);
@@ -371,7 +361,7 @@ public class ClienteServiceIT {
                     .isInstanceOf(ClienteResponseDTO.class);
             AssertionsForClassTypes.assertThat(clienteResponse.id())
                     .isNotNull()
-                    .isEqualTo(1L);
+                    .isEqualTo(id);
             AssertionsForClassTypes.assertThat(clienteResponse.nome())
                     .isNotNull()
                     .isEqualTo("Guilherme Matos de Carvalho");
@@ -385,7 +375,7 @@ public class ClienteServiceIT {
                     .isEqualTo("12345678910");
             AssertionsForClassTypes.assertThat(clienteResponse.endereco().getCep())
                     .isNotNull()
-                    .isEqualTo("147852369");
+                    .isEqualTo("14752369");
             AssertionsForClassTypes.assertThat(clienteResponse.endereco().getLogradouro())
                     .isNotNull()
                     .isEqualTo("Rua A");
@@ -425,7 +415,7 @@ public class ClienteServiceIT {
         @Test
         void deveRetornarClientePorId() {
             // Arrange
-            Long id = 1L;
+            Long id = clienteList.get(0).getId();;
 
             // Act
             var cliente = clienteService.obterClientePorId(id);
@@ -436,7 +426,7 @@ public class ClienteServiceIT {
                     .isInstanceOf(Cliente.class);
             assertThat(cliente.getId())
                     .isNotNull()
-                    .isEqualTo(1L);
+                    .isEqualTo(id);
             assertThat(cliente.getNome())
                     .isNotNull()
                     .isEqualTo("Guilherme Matos de Carvalho");
@@ -455,7 +445,7 @@ public class ClienteServiceIT {
                     .isEqualTo("147852369");
             assertThat(cliente.getEndereco().getCep())
                     .isNotNull()
-                    .isEqualTo("147852369");
+                    .isEqualTo("14752369");
             assertThat(cliente.getEndereco().getLogradouro())
                     .isNotNull()
                     .isEqualTo("Rua A");
@@ -502,7 +492,6 @@ public class ClienteServiceIT {
 
             // Arrange
             var clienteRequestDTO = new ClienteRequestDTO(
-                    6L,
                     "Fulano de Tal",
                     "fulano@example.com",
                     "senha123",
@@ -510,7 +499,7 @@ public class ClienteServiceIT {
                     "84562414541",
                     "369258147",
                     new Endereco(
-                            "369258147",
+                            "36925817",
                             "Rua dos indios",
                             "Apartamento",
                             "Nova Conquista",
@@ -530,8 +519,7 @@ public class ClienteServiceIT {
                     .isNotNull()
                     .isInstanceOf(ClienteResponseDTO.class);
             assertThat(cliente.id())
-                    .isNotNull()
-                    .isEqualTo(6L);
+                    .isNotNull();
             assertThat(cliente.nome())
                     .isNotNull()
                     .isEqualTo("Fulano de Tal");
@@ -545,7 +533,7 @@ public class ClienteServiceIT {
                     .isEqualTo("987654321");
             assertThat(cliente.endereco().getCep())
                     .isNotNull()
-                    .isEqualTo("369258147");
+                    .isEqualTo("36925817");
             assertThat(cliente.endereco().getLogradouro())
                     .isNotNull()
                     .isEqualTo("Rua dos indios");
@@ -578,7 +566,6 @@ public class ClienteServiceIT {
 
             // Arrange
             var clienteRequestDTO = new ClienteRequestDTO(
-                    6L,
                     "Fulano de Tal",
                     "fulano@example.com",
                     "Sdsadwd21321@#$",
@@ -586,7 +573,7 @@ public class ClienteServiceIT {
                     "12345678910",
                     "369258147",
                     new Endereco(
-                            "369258147",
+                            "36925814",
                             "Rua dos indios",
                             "Apartamento",
                             "Nova Conquista",
@@ -611,10 +598,9 @@ public class ClienteServiceIT {
 
         @Test
         void deveAtualizarCliente() {
-            Long id = 3L;
+            Long id = clienteList.get(2).getId();
             // Arrange
             var clienteRequestDTO = new ClienteRequestDTO(
-                    id,
                     "Fulano de Tal",
                     "fulano@example.com",
                     "Sdsadwd21321@#$",
@@ -622,7 +608,7 @@ public class ClienteServiceIT {
                     "11987654321",
                     "369258147",
                     new Endereco(
-                            "369258147",
+                            "36925817",
                             "Rua dos indios",
                             "Apartamento",
                             "Nova Conquista",
@@ -657,7 +643,7 @@ public class ClienteServiceIT {
                     .isEqualTo("987654321");
             assertThat(cliente.endereco().getCep())
                     .isNotNull()
-                    .isEqualTo("369258147");
+                    .isEqualTo("36925817");
             assertThat(cliente.endereco().getLogradouro())
                     .isNotNull()
                     .isEqualTo("Rua dos indios");
@@ -686,10 +672,9 @@ public class ClienteServiceIT {
 
         @Test
         void deveGerarExcessaoQuandoCpfJaCadastrado() {
-            Long id = 3L;
+            Long id = clienteList.get(2).getId();
             // Arrange
             var clienteRequestDTO = new ClienteRequestDTO(
-                    id,
                     "Fulano de Tal",
                     "fulano@example.com",
                     "Sdsadwd21321@#$",
@@ -721,7 +706,6 @@ public class ClienteServiceIT {
             Long id = 10L;
             // Arrange
             var clienteRequestDTO = new ClienteRequestDTO(
-                    id,
                     "Fulano de Tal",
                     "fulano@example.com",
                     "Sdsadwd21321@#$",
@@ -753,7 +737,7 @@ public class ClienteServiceIT {
 
         @Test
         void deveDeletarCliente() {
-            var id = 5L;
+            Long id = clienteList.get(4).getId();
             // Act
             clienteService.deletarCliente(id);
 
@@ -765,6 +749,7 @@ public class ClienteServiceIT {
         }
 
         @Test
+
         void deveGerarExcessaoQuandoNaoEncontrado() {
             var idNaoExiste = 10L;
 

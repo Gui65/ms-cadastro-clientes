@@ -35,6 +35,7 @@ public class ClienteControllerIT {
     @Autowired
     private ClienteRespository clienteRespository;
 
+    private List<Cliente> clienteList;
 
     @BeforeEach
     void setup() {
@@ -43,7 +44,7 @@ public class ClienteControllerIT {
 
         List<Cliente> clientes = getClientes();
 
-        clienteRespository.saveAll(clientes);
+        clienteList = clienteRespository.saveAll(clientes);
     }
 
     private List<Cliente> getClientes() {
@@ -55,9 +56,9 @@ public class ClienteControllerIT {
                 "Sdsadwd21321@#$",
                 "11923465432",
                 "12345678910",
-                "147852369",
+                "14785269",
                 new Endereco(
-                        "147852369",
+                        "14785269",
                         "Rua A",
                         "Casa",
                         "Centro",
@@ -75,11 +76,11 @@ public class ClienteControllerIT {
                 "Fulano de Tal",
                 "fulano@example.com",
                 "senha123",
-                "987654321",
+                "98765431",
                 "11987654321",
-                "987654321",
+                "98765431",
                 new Endereco(
-                        "987654321",
+                        "98765431",
                         "Rua B",
                         "Apartamento",
                         "Bairro Novo",
@@ -97,11 +98,11 @@ public class ClienteControllerIT {
                 "Ciclano da Silva",
                 "ciclano@example.com",
                 "senha456",
-                "369258147",
+                "36925814",
                 "11987654321",
-                "369258147",
+                "36925814",
                 new Endereco(
-                        "369258147",
+                        "36925814",
                         "Rua C",
                         "Sobrado",
                         "Centro",
@@ -119,11 +120,11 @@ public class ClienteControllerIT {
                 "Beltrano Oliveira",
                 "beltrano@example.com",
                 "senha789",
-                "654123987",
+                "64123987",
                 "11987654321",
-                "654123987",
+                "64123987",
                 new Endereco(
-                        "654123987",
+                        "64123987",
                         "Rua D",
                         "Casa",
                         "Periferia",
@@ -141,11 +142,11 @@ public class ClienteControllerIT {
                 "Maria Souza",
                 "maria@example.com",
                 "senhaabc",
-                "852147369",
+                "85214769",
                 "11987654321",
-                "852147369",
+                "85214769",
                 new Endereco(
-                        "852147369",
+                        "85214769",
                         "Rua E",
                         "Apartamento",
                         "Praia",
@@ -162,7 +163,7 @@ public class ClienteControllerIT {
 
     @AfterEach
     void dropDatabase() {
-        System.out.println("Dropping database");
+        clienteList = null;
         clienteRespository.deleteAll();
     }
 
@@ -197,7 +198,7 @@ public class ClienteControllerIT {
 
         @Test
         void obterPorId() {
-            var id = 1L;
+            Long id = clienteList.get(0).getId();
 
             given()
                     .filter(new AllureRestAssured())
@@ -234,15 +235,14 @@ public class ClienteControllerIT {
         @Test
         void deveCadastrar() {
             var request = new ClienteRequestDTO(
-                    1L,
                     "Fulano de tal",
                     "fulano@example.com",
                     "Sdsadwd21321@#$",
                     "11987654321",
-                    "666555481217",
-                    "369258147",
+                    "66654812177",
+                    "36925814",
                     new Endereco(
-                            "147852369",
+                            "14785269",
                             "Rua A",
                             "Casa",
                             "Centro",
@@ -270,15 +270,14 @@ public class ClienteControllerIT {
         void deveGerarExcessaoQuandoCpfJaCadastrado() throws Exception {
 
             var request = new ClienteRequestDTO(
-                    1L,
                     "Fulano de tal",
                     "fulano@example.com",
                     "Sdsadwd21321@#$",
                     "11987654321",
                     "12345678910",
-                    "369258147",
+                    "36925814",
                     new Endereco(
-                            "147852369",
+                            "14785269",
                             "Rua A",
                             "Casa",
                             "Centro",
@@ -310,17 +309,16 @@ public class ClienteControllerIT {
 
         @Test
         void deveAtualizar() throws Exception {
-            var id = 1L;
+            Long id = clienteList.get(0).getId();
             var request = new ClienteRequestDTO(
-                    1L,
                     "Fulano de tal",
                     "fulano@example.com",
                     "Sdsadwd21321@#$",
                     "11987654321",
-                    "666555481217",
-                    "369258147",
+                    "66655548127",
+                    "36925814",
                     new Endereco(
-                            "147852369",
+                            "14785269",
                             "Rua A",
                             "Casa",
                             "Centro",
@@ -347,15 +345,14 @@ public class ClienteControllerIT {
         void deveGerarExcessaoQuandoIdNaoEncontrado() throws Exception {
             var id = 6L;
             var request = new ClienteRequestDTO(
-                    id,
                     "Fulano de tal",
                     "fulano@example.com",
                     "Sdsadwd21321@#$",
                     "11987654321",
                     "666555481217",
-                    "369258147",
+                    "36925814",
                     new Endereco(
-                            "147852369",
+                            "14785269",
                             "Rua A",
                             "Casa",
                             "Centro",
@@ -384,17 +381,16 @@ public class ClienteControllerIT {
 
         @Test
         void deveGerarExcessaoQuandoCpfJaCadastrado() throws Exception {
-            var id = 3L;
+            Long id = clienteList.get(2).getId();
             var request = new ClienteRequestDTO(
-                    id,
                     "Fulano de tal",
                     "fulano@example.com",
                     "Sdsadwd21321@#$",
                     "11987654321",
                     "12345678910",
-                    "369258147",
+                    "36925814",
                     new Endereco(
-                            "147852369",
+                            "14785269",
                             "Rua A",
                             "Casa",
                             "Centro",
@@ -426,7 +422,7 @@ public class ClienteControllerIT {
 
         @Test
         void deveDeletarCliente() throws Exception {
-            var id = 1L;
+            Long id = clienteList.get(4).getId();
 
             given()
                     .filter(new AllureRestAssured())

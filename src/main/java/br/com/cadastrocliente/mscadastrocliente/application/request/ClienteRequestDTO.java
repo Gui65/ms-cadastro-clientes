@@ -3,7 +3,6 @@ package br.com.cadastrocliente.mscadastrocliente.application.request;
 import br.com.cadastrocliente.mscadastrocliente.domain.valueObject.Endereco;
 
 public record ClienteRequestDTO(
-    Long id,
     String nome,
     String email,
     String senha,

@@ -130,15 +130,14 @@ public class ClienteServiceTest {
 
             // Cliente com o mesmo CPF que já está cadastrado
             ClienteRequestDTO clienteRequestDTO = new ClienteRequestDTO(
-                    1L,
                     "Guilherme Matos de Carvalho",
                     "8Xa5I@example.com",
                     "Sdsadwd21321@#$",
                     "11987654321",
                     cpfExistente,
-                    "147852369",
+                    "9",
                     new Endereco(
-                            "147852369",
+                            "9",
                             "123",
                             "Casa",
                             "Centro",
@@ -168,7 +167,7 @@ public class ClienteServiceTest {
             // Configura o mock para retornar o cliente quando o método save for chamado
             when(clienteRespository.save(any(Cliente.class))).thenAnswer(invocation -> {
                 Cliente savedCliente = invocation.getArgument(0);
-                savedCliente.setId(1L); // Define um ID para o cliente salvo, simulando a persistência
+                //savedCliente.setId(1L); // Define um ID para o cliente salvo, simulando a persistência
                 return savedCliente;
             });
 
@@ -194,7 +193,7 @@ public class ClienteServiceTest {
             clienteRequestAtualizado.setNome("Guilherme Mattos de Carvalho");
             clienteRequestAtualizado.setSenha("123456");
             clienteRequestAtualizado.setTelefone("11987654321");
-            clienteRequestAtualizado.getEndereco().setCep("147852369");
+            clienteRequestAtualizado.getEndereco().setCep("9");
             clienteRequestAtualizado.getEndereco().setLogradouro("Casa");
             clienteRequestAtualizado.getEndereco().setComplemento("Centro");
             clienteRequestAtualizado.getEndereco().setCidade("São Paulo");
@@ -306,7 +305,7 @@ public class ClienteServiceTest {
                 "11987654321",
                 "8Xa5I@example.com",
                 new Endereco(
-                        "147852369",
+                        "9",
                         "123",
                         "Casa",
                         "Centro",
@@ -327,7 +326,7 @@ public class ClienteServiceTest {
                 "11987654321",
                 "8Xa5I@example.com",
                 new Endereco(
-                        "147852369",
+                        "9",
                         "123",
                         "Casa",
                         "Centro",
@@ -342,15 +341,14 @@ public class ClienteServiceTest {
 
     private ClienteRequestDTO buildClienteRequestDTO() {
         return new ClienteRequestDTO(
-                1L,
                 "Guilherme Matos de Carvalho",
                 "8Xa5I@example.com",
                 "Sdsadwd21321@#$",
                 "11987654321",
                 "12345678910",
-                "147852369",
+                "9",
                 new Endereco(
-                        "147852369",
+                        "9",
                         "123",
                         "Casa",
                         "Centro",

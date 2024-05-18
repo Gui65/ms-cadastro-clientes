@@ -25,7 +25,7 @@ public class StepDefinitionCliente {
     private Response response;
     private ClienteResponseDTO clienteResponseDTO;
     private List<ClienteResponseDTO> clienteResponseDTOList;
-    private final String ENDPOINT_API_CLIENTE = "http://localhost:8080/cliente";
+    private final String ENDPOINT_API_CLIENTE = "http://localhost:8081/cliente";
 
     @Quando("cadastar um novo cliente")
     public ClienteResponseDTO cadastrar_um_novo_cliente() {
@@ -186,7 +186,6 @@ public class StepDefinitionCliente {
 
     private ClienteRequestDTO getClienteRequest() {
         return new ClienteRequestDTO(
-                1L,
                 "Guilherme Matos de Carvalho",
                 "8Xa5I@example.com",
                 "Sdsadwd21321@#$",
@@ -194,7 +193,7 @@ public class StepDefinitionCliente {
                 gerarCpfsAleatorios(),
                 "147852369",
                 new Endereco(
-                        "147852369",
+                        "14785239",
                         "123",
                         "Casa",
                         "Centro",

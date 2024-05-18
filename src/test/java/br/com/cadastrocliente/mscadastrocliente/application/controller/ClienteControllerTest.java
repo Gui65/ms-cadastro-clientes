@@ -237,7 +237,7 @@ public class ClienteControllerTest {
                 "11987654321",
                 "8Xa5I@example.com",
                     new Endereco(
-                            "147852369",
+                            "14785236",
                             "123",
                             "Casa",
                             "Centro",
@@ -258,7 +258,7 @@ public class ClienteControllerTest {
                 "11987654321",
                 "8Xa5I@example.com",
                 new Endereco(
-                        "147852369",
+                        "14785236",
                         "123",
                         "Casa",
                         "Centro",
@@ -273,15 +273,14 @@ public class ClienteControllerTest {
 
     private ClienteRequestDTO buildClienteRequestDTO() {
         return new ClienteRequestDTO(
-                1L,
                 "Guilherme Matos de Carvalho",
                 "8Xa5I@example.com",
                 "Sdsadwd21321@#$",
                 "11987654321",
                 "12345678910",
-                "147852369",
+                "14785236",
                 new Endereco(
-                        "147852369",
+                        "14785236",
                         "123",
                         "Casa",
                         "Centro",
