@@ -5,7 +5,7 @@ Funcionalidade: Cliente
     Entao o cliente e cadastrado com sucesso
     E deve ser apresentado
 
-  Cenario: Buscar Cliente
+  Cenario: Buscar Todos Cliente
     Dado que um cliente foi cadastrado
     Quando eu realizar uma busca de todos os clientes
     Entao a lista de clientes deve ser apresentado com sucesso
